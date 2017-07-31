@@ -20,23 +20,56 @@ advtrains.register_wagon("NY_lokomotive", {
 			driving_ctrl_access=true,
 			group = "dstand",
 		},
--- 		{
--- 			name=S("Driver Stand (right)"),
--- 			attach_offset={x=5, y=10, z=-10},
--- 			view_offset={x=0, y=6, z=0},
--- 			driving_ctrl_access=true,
--- 			group = "dstand",
--- 		},
+{
+			name="1",
+			attach_offset={x=-4, y=8, z=0},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="2",
+			attach_offset={x=4, y=8, z=0},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="3",
+			attach_offset={x=-4, y=8, z=-8},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="4",
+			attach_offset={x=4, y=8, z=-8},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
 	},
 	seat_groups = {
 		dstand={
 			name = "Driver Stand",
-			access_to = {},
+			access_to = {"pass"},
+			require_doors_open=true,
+		},
+		pass={
+			name = "Passenger area",
+			access_to = {"dstand"},
+			require_doors_open=true,
 		},
 	},
-	assign_to_seat_group = {"dstand"},
+	assign_to_seat_group = {"dstand", "pass"},
+	doors={
+		open={
+			[-1]={frames={x=0, y=20}, time=1},
+			[1]={frames={x=40, y=60}, time=1}
+		},
+		close={
+			[-1]={frames={x=20, y=40}, time=1},
+			[1]={frames={x=60, y=80}, time=1}
+		}
+	},
 	visual_size = {x=1, y=1},
-	wagon_span=1.85,
+	wagon_span=4,
 	collisionbox = {-1.0,-0.5,-1.0, 1.0,2.5,1.0},
 	update_animation=function(self, velocity)
 		if self.old_anim_velocity~=advtrains.abs_ceil(velocity) then
@@ -44,34 +77,77 @@ advtrains.register_wagon("NY_lokomotive", {
 			self.old_anim_velocity=advtrains.abs_ceil(velocity)
 		end
 	end,
-	custom_on_activate = function(self, staticdata_table, dtime_s)
-		minetest.add_particlespawner({
-			amount = 10,
-			time = 0,
-		--  ^ If time is 0 has infinite lifespan and spawns the amount on a per-second base
-			minpos = {x=0, y=2, z=1.2},
-			maxpos = {x=0, y=2, z=1.2},
-			minvel = {x=-0.2, y=1.8, z=-0.2},
-			maxvel = {x=0.2, y=2, z=0.2},
-			minacc = {x=0, y=-0.1, z=0},
-			maxacc = {x=0, y=-0.3, z=0},
-			minexptime = 2,
-			maxexptime = 4,
-			minsize = 1,
-			maxsize = 4,
-		--  ^ The particle's properties are random values in between the bounds:
-		--  ^ minpos/maxpos, minvel/maxvel (velocity), minacc/maxacc (acceleration),
-		--  ^ minsize/maxsize, minexptime/maxexptime (expirationtime)
-			collisiondetection = true,
-		--  ^ collisiondetection: if true uses collision detection
-			vertical = false,
-		--  ^ vertical: if true faces player using y axis only
-			texture = "smoke_puff.png",
-		--  ^ Uses texture (string)
-			attached = self.object,
-		})
-	end,
+
+
 	drops={"advtrains:engine_ny"},
-}, S("NY Engine"), "advtrains_engine_ny_inv.png")
+}, S("NY subway Engine"), "advtrains_engine_ny_inv.png")
+
+advtrains.register_wagon("ny_wagon", {
+	mesh="advtrains_wagon_ny.b3d",
+	textures = {"advtrains_engine_ny.png"},
+	drives_on={default=true},
+	max_speed=20,
+	seats = {
+		{
+			name="1",
+			attach_offset={x=-4, y=8, z=8},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="2",
+			attach_offset={x=4, y=8, z=8},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="1a",
+			attach_offset={x=-4, y=8, z=0},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="2a",
+			attach_offset={x=4, y=8, z=0},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="3",
+			attach_offset={x=-4, y=8, z=-8},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+		{
+			name="4",
+			attach_offset={x=4, y=8, z=-8},
+			view_offset={x=0, y=-4, z=0},
+			group="pass",
+		},
+	},
+	seat_groups = {
+		pass={
+			name = "Passenger area",
+			access_to = {},
+			require_doors_open=true,
+		},
+	},
+	assign_to_seat_group = {"pass"},
+	doors={
+		open={
+			[-1]={frames={x=0, y=20}, time=1},
+			[1]={frames={x=40, y=60}, time=1}
+		},
+		close={
+			[-1]={frames={x=20, y=40}, time=1},
+			[1]={frames={x=60, y=80}, time=1}
+		}
+	},
+	door_entry={-1, 1},
+	visual_size = {x=1, y=1},
+	wagon_span=2.3,
+	collisionbox = {-1.0,-0.5,-1.0, 1.0,2.5,1.0},
+	drops={"advtrains_wagon_ny"},
+}, S("NY subway wagon"), "advtrains_wagon_ny_inv.png")
 
 
